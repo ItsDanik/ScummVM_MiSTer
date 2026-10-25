@@ -12,7 +12,11 @@
 #                 logo beside it
 #   the pointer   white with a dark outline, every pixel drawn
 #   the layouts   ScummVM's common ones, from the submodule, the in-game menu
-#                 with the game behind it in grey (shading 'luminance')
+#                 with the game behind it in grey (shading 'luminance'), and
+#                 the launcher's artwork view at 640x400 / 640x480
+#                 (LauncherArt, MISTER_HYBRID in gui/launcher.cpp): the list,
+#                 the selected game's artwork (ART_SIZE, tools/make_icons.py
+#                 makes the icons for it) and its details
 # into build/theme/misterhybrid/ and build/theme/zip/misterhybrid.zip (package.sh
 # puts it in data/; tools/theme_preview.sh takes either; the MiSTer
 # backend makes it the default, with gui_disable_fixed_font_scaling: ScummVM's
@@ -63,6 +67,10 @@ PAL = {
 def rgb(name):
     h = PAL.get(name, name)
     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+# the artwork view's picture, square (make_icons.py makes the icons in this
+# size, on the background "bg")
+ART_SIZE = 280
 
 # the two sizes of ScummVM's layouts: below 400 lines (320x200) and from 400
 # (pop: a popup's arrows, width, height, the lower one's top, the upper
@@ -215,7 +223,13 @@ ICONS = [("search", 16, 16), ("eraser", 16, 16), ("delbtn", 16, 16), ("list", 16
          ("stopbtn", 32, 32), ("editbtn", 32, 32), ("switchbtn", 32, 32), ("fastreplay", 32, 32),
          ("stopbtn_small", 16, 16), ("editbtn_small", 16, 16), ("switchbtn_small", 16, 16),
          ("fastreplay_small", 16, 16), ("button_play", 15, 15), ("button_load", 15, 15),
-         ("button_options", 15, 15), ("groupbtn", 16, 16)]
+         ("button_options", 15, 15), ("groupbtn", 16, 16), ("art", 16, 16)]
+
+# the artwork view's button, beside ScummVM's list and grid: the list's lines
+# and a picture
+ART_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">'
+           '<path style="fill:#fff" d="M2 6h12v2H2zm0 6h12v2H2zm0 6h12v2H2zm0 6h12v2H2z'
+           'M17 5h13v13H17zm0 16h13v2H17zm0 4h9v2h-9z"/></svg>')
 
 def gfx(bitmaps):
     s = "<?xml version = '1.0'?>\n<!-- MiSTer Hybrid: made by tools/make_theme.py of ScummVM_MiSTer, edit that -->\n<render_info>\n\t<palette>\n"
@@ -363,7 +377,7 @@ def icon_colour(m):
 def icons():
     for name, _, _ in ICONS:
         name = name.replace("_small", "")
-        src = open(os.path.join(THEMES, "common-svg", name + ".svg")).read()
+        src = ART_SVG if name == "art" else open(os.path.join(THEMES, "common-svg", name + ".svg")).read()
         open(os.path.join(DIR, name + ".svg"), "w").write(re.sub(r"#[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b", icon_colour, src))
 
 # Cozette for ScummVM's loader: characters 32..255 (it keeps 256), each in its
@@ -407,14 +421,88 @@ def cozette():
     # no table of advances, none of boxes
     open(os.path.join(DIR, "cozette.fcc"), "wb").write(fcc + b"\0\0")
 
-# ScummVM's layouts, the in-game menu with the game in grey behind it
+# The artwork view (640x400 / 640x480): a line with the small logo, the
+# search and the grouping; the list, and beside it the artwork with the
+# game's details under it; the list view's buttons in two rows, the version
+# between the views' buttons and the last ones, which the
+# bottom padding makes room for (ScummVM's launcher dialogs do it that way:
+# its layout gives the list everything but the padding)
+def art_dialog():
+    line = "\t\t\t\t\t<widget name = '%s' width = '%d' height = '15'/>\n"
+    button = "\t\t\t\t<widget name = '%s' height = 'Globals.Button.Height'/>\n"
+    switch = "\t\t\t\t<widget name = '%s' height = 'Globals.Button.Height' width = 'Globals.Button.Height'/>\n"
+    return ("\t<dialog name = 'LauncherArt' overlays = 'screen'>\n"
+            "\t\t<layout type = 'vertical' align = 'center' padding = '16, 16, 8, 60'>\n"
+            "\t\t\t<layout type = 'horizontal' spacing = '5' padding = '0, 0, 0, 0' align = 'center'>\n"
+            "\t\t\t\t<widget name = 'Logo' width = '208' height = '40' rtl = 'no'/>\n"
+            "\t\t\t\t<space size = '10'/>\n"
+            "\t\t\t\t<widget name = 'SearchPic' width = '16' height = '17' rtl = 'no'/>\n"
+            "\t\t\t\t<widget name = 'Search' width = '120' height = 'Globals.Line.Height'/>\n"
+            "\t\t\t\t<widget name = 'SearchClearButton' height = 'Globals.Line.Height' width = 'Globals.Line.Height'/>\n"
+            "\t\t\t\t<space size = '5'/>\n"
+            "\t\t\t\t<widget name = 'GroupPic' width = '17' height = '17' rtl = 'no'/>\n"
+            "\t\t\t\t<widget name = 'laGroupPopup' width = '100' type = 'PopUp'/>\n"
+            "\t\t\t\t<space/>\n"
+            "\t\t\t\t<widget name = 'HelpButton' height = 'Globals.Button.Height' width = 'Globals.Launcher.HelpButton.Width'/>\n"
+            "\t\t\t</layout>\n"
+            "\t\t\t<layout type = 'horizontal' spacing = '10' padding = '0, 0, 0, 0'>\n"
+            "\t\t\t\t<widget name = 'GameList'/>\n"
+            "\t\t\t\t<layout type = 'vertical' spacing = '0' padding = '0, 0, 0, 0'>\n"
+            "\t\t\t\t\t<widget name = 'Art' width = '%d' height = '%d'/>\n" % (ART_SIZE, ART_SIZE)
+            + "\t\t\t\t\t<space size = '4'/>\n"
+            + line % ("ArtTitle", ART_SIZE)
+            + "".join(line % ("ArtDetail%d" % i, ART_SIZE) for i in range(1, 5))
+            + "\t\t\t\t\t<space/>\n"
+            "\t\t\t\t</layout>\n"
+            "\t\t\t</layout>\n"
+            "\t\t\t<layout type = 'horizontal' spacing = '2' padding = '0, 0, 4, 0'>\n"
+            + "".join(button % w for w in ("StartButton", "LoadGameButton", "EditGameButton", "AddGameButton",
+                                           "DownloadGamesButton", "RemoveGameButton"))
+            + "\t\t\t</layout>\n"
+            "\t\t\t<layout type = 'horizontal' spacing = '2' padding = '0, 0, 0, 0'>\n"
+            + "".join(switch % w for w in ("ListSwitch", "GridSwitch", "ArtSwitch"))
+            + "\t\t\t\t<widget name = 'Version' height = 'Globals.Button.Height' textalign = 'center'/>\n"
+            + "".join("\t\t\t\t<widget name = '%s' width = '%d' height = 'Globals.Button.Height'/>\n" % w
+                      for w in (("OptionsButton", 108), ("MainHelpButton", 70), ("AboutButton", 70), ("QuitButton", 70)))
+            + "\t\t\t</layout>\n"
+            "\t\t</layout>\n"
+            "\t</dialog>\n\n")
+
+def need(s, old, f, what):
+    if s.count(old) != 1:
+        sys.exit("%s: %s has changed, see layouts() of %s" % (f, what, __file__))
+
+# ScummVM's layouts, the in-game menu with the game in grey behind it, and at
+# 640x400 / 640x480 the artwork view, its button next to the list's and the
+# grid's
 def layouts():
     for f in ("lowres_layout.stx", "highres_layout.stx"):
         s = open(os.path.join(THEMES, "common", f)).read()
         old = "<dialog name = 'GlobalMenu' overlays = 'screen_center'>"
-        if s.count(old) != 1:
-            sys.exit("%s: the in-game menu's dialog line has changed, see layouts() of %s" % (f, __file__))
-        open(os.path.join(DIR, f), "w").write(s.replace(old, old[:-1] + " shading = 'luminance'>"))
+        need(s, old, f, "the in-game menu's dialog line")
+        s = s.replace(old, old[:-1] + " shading = 'luminance'>")
+        if f == "highres_layout.stx":
+            old = "\t\t<def var = 'GridSupported' value = '1'/>\n"
+            need(s, old, f, "the grid's variable")
+            s = s.replace(old, old + "\t\t<def var = 'LauncherArtSupported' value = '1'/>\n")
+            # the three launcher dialogs (list wide and tall, grid): each has the
+            # grid's button once
+            parts = re.split(r"(?=\t<dialog name = ')", s)
+            n = 0
+            for i, d in enumerate(parts):
+                if re.match(r"\t<dialog name = '(Launcher|LauncherGrid)' ", d):
+                    m = re.search(r"([ \t]*)<widget name = 'GridSwitch'[^>]*/>\n", d)
+                    if not m:
+                        sys.exit("%s: a launcher dialog without the grid's button, see layouts() of %s" % (f, __file__))
+                    art = m.group(0).replace("GridSwitch", "ArtSwitch")
+                    parts[i] = d[:m.end()] + art + d[m.end():]
+                    n += 1
+                elif d.startswith("\t<dialog name = 'EEDialog' "):
+                    parts[i] = art_dialog() + d
+            if n != 3 or "LauncherArt" not in "".join(parts):
+                sys.exit("%s: not the three launcher dialogs, see layouts() of %s" % (f, __file__))
+            s = "".join(parts)
+        open(os.path.join(DIR, f), "w").write(s)
 
 def main():
     version = re.search(r'SCUMMVM_THEME_VERSION_STR "([^"]+)"',
