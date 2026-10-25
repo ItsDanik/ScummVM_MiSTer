@@ -3,7 +3,8 @@
 # in the layout of the hybrid ports (hybrid/README.md, "Naming and layout"):
 #   _Other/dnk-<title>.mgl             a menu entry for each game (package/games.txt)
 #   _Other/dnk/dnk-ScummVM_<date>.rbf    the core, not in the menu itself
-#   games/dnk/ScummVM/                   the game, its logos in logos/
+#   games/dnk/ScummVM/                   the game, its logos in logos/,
+#                                       ScummVM's game icons in icons/
 #   games/dnk/SoundFonts/               GeneralUser GS and its licence, if the
 #                                       games play MIDI (MIDI_SYNTH 1)
 #   Scripts/danik_hybrid_ports.sh       the launcher, and its screen in
@@ -76,6 +77,9 @@ hybrid/docker.sh make -s -C build/mister --eval 'print-dist-files: ; @echo $(DIS
 # the port's theme, the default (tools/make_theme.py)
 python3 tools/make_theme.py > /dev/null
 cp build/theme/zip/misterhybrid.zip "$G/data/"
+# ScummVM's game icons for the launcher's grid, in icons/ (the backend's
+# iconspath): fetched at their pinned versions, never committed
+tools/icons.sh "$G/icons"
 hybrid/docker.sh arm-linux-gnueabihf-strip "$G/ScummVM" "$G/mh_message"
 chmod +x "$G/ScummVM" "$G/mh_message" "$G"/*.sh "$G/danik_hybrid_ports_ui" \
     "$OUT/Scripts/danik_hybrid_ports.sh" "$OUT/Scripts/.danik_hybrid_ports/danik_hybrid_ports_ui" \
