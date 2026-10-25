@@ -1,14 +1,16 @@
 #!/bin/sh
 # ScummVM's game icons, which its launcher shows in the grid view (the
 # *Launcher* option at 640x480: ScummVM's 320x200 layout has no grid): every
-# pack of downloads.scummvm.org/frs/icons/ as of the date below, the newest
-# ones taking the place of an older pack's icons (gui/gui-manager.cpp), with
-# the licence (GPL-2.0) and authors of github.com/scummvm/scummvm-icons, into
-# <folder> (the zip's games/dnk/ScummVM/icons/, the backend's iconspath).
+# pack of downloads.scummvm.org/frs/icons/ as of the date below, merged into
+# one and scaled to the grid's size by tools/make_icons.py
+# (gui-icons-mister.dat), with the licence (GPL-2.0) and authors of
+# github.com/scummvm/scummvm-icons, into <folder> (the zip's
+# games/dnk/ScummVM/icons/, the backend's iconspath).
 #
-# Never committed: package.sh fetches them, checks them against the SHA-256
-# sums below and keeps them in build/icons/ for the next package. A new pack
-# on the server (its LIST): its line below, and the commit for the licence.
+# Never committed: package.sh fetches the packs, checks them against the
+# SHA-256 sums below and keeps them in build/icons/, with the merged pack
+# (made again when this script or make_icons.py changes). A new pack on the
+# server (its LIST): its line below, and the commit for the licence.
 #
 # usage: tools/icons.sh <folder>
 set -e
@@ -19,6 +21,8 @@ PACKS=https://downloads.scummvm.org/frs/icons
 # scummvm-icons as of 2026-10-10
 REPO=https://raw.githubusercontent.com/scummvm/scummvm-icons/1ef876f6ea88a20bccc70be6d12ae0ee0d8594e7
 CACHE=build/icons
+MERGED=$CACHE/merged/gui-icons-mister.dat
+PACKLIST=
 mkdir -p "$CACHE" "$OUT"
 
 # <URL> <file in the cache> <sum>
@@ -33,7 +37,7 @@ fetch() {
 }
 while read -r name sum; do
     fetch "$PACKS/$name" "$name" "$sum"
-    cp "$CACHE/$name" "$OUT/"
+    PACKLIST="$PACKLIST $CACHE/$name"
 done <<EOF
 gui-icons-20211112.dat 1152a200382cbf40e41c29ffac678fa5aa6b050f4b0b6d1bbc36d0ae75d98cdb
 gui-icons-20220602.dat 5d7f32bebe35e9016d6611bb4ccc61a9914200fee74e1e4a45c8229d954ada47
@@ -50,5 +54,11 @@ gui-icons-20261010.dat e5c0c7085fe66d3e2fc8486efe020c5e26a9b457ababbf5fad12cef30
 EOF
 fetch "$REPO/LICENSE" LICENSE 8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643
 fetch "$REPO/AUTHORS" AUTHORS 502b2f8b0de5bfbac22ba2f365501c1ca4e28e50b7af1c659745ecddd690e838
+# the packs oldest first, as the list above has them
+if [ ! "$MERGED" -nt tools/make_icons.py ] || [ ! "$MERGED" -nt tools/icons.sh ]; then
+    mkdir -p "$(dirname "$MERGED")"
+    python3 tools/make_icons.py "$MERGED" $PACKLIST > /dev/null
+fi
+cp "$MERGED" "$OUT/"
 cp "$CACHE/LICENSE" "$OUT/LICENSE-icons.txt"
 cp "$CACHE/AUTHORS" "$OUT/AUTHORS-icons.txt"
