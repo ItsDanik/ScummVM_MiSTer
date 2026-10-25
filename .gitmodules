@@ -1,0 +1,8 @@
+[submodule "hybrid"]
+	path = hybrid
+	url = https://github.com/ItsDanik/Hybrid_MiSTer.git
+	branch = main
+[submodule "scummvm"]
+	path = scummvm
+	url = https://github.com/scummvm/scummvm.git
+	branch = mister
