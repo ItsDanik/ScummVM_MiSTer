@@ -7,9 +7,9 @@
 # at every new row.
 #   icons/      the grid at 4 a row in 640x480 (gui/widgets/grid.cpp), and
 #               what ScummVM scales for 5 and more a row
-#   icons149/   the grid at 3 a row; the launcher allows no fewer
+#   icons143/   the grid at 3 a row; the launcher allows no fewer
 #               (gui/launcher.cpp, MISTER_HYBRID)
-#   icons280/   the artwork view (LauncherArt), JPEG on the theme's
+#   icons236/   the artwork view (LauncherArt), JPEG on the theme's
 #               background (the view and its size are the port's theme's,
 #               tools/make_theme.py): a third of PNG's size
 # The grid takes icons<size>/ where it has its size, else icons/.
@@ -32,9 +32,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.dont_write_bytecode = True  # no tools/__pycache__/
 from make_theme import ART_SIZE, rgb  # noqa: E402
 
-# the grid's thumbnails in 640x480, ScummVM's layouts (measured in
-# GridWidget::reloadThumbnails()): 104x104 at 4 a row, 149x149 at 3
-GRID = {"icons": 104, "icons149": 149}
+# the grid's thumbnails in 640x480, ScummVM's layouts inside the backend's
+# margin for CRTs (mister-graphics.cpp; measured in
+# GridWidget::reloadThumbnails()): 99x99 at 4 a row, 143x143 at 3
+GRID = {"icons": 99, "icons143": 143}
 
 
 def scaled(im, size):

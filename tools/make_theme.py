@@ -10,7 +10,8 @@
 #                 detail one line high flickers in 480i)
 #   the logo      ScummVM's in the dots' pink and pale lavender, the MiSTer
 #                 logo beside it
-#   the pointer   white with a dark outline, every pixel drawn
+#   the pointer   white with a dark outline, every pixel drawn, 11x16 at
+#                 every resolution (Danik: 22x32 at 640x480 was too big)
 #   the layouts   ScummVM's common ones, from the submodule, the in-game menu
 #                 with the game behind it in grey (shading 'luminance'), and
 #                 the launcher's artwork view at 640x400 / 640x480
@@ -70,7 +71,7 @@ def rgb(name):
 
 # the artwork view's picture, square (make_icons.py makes the icons in this
 # size, on the background "bg")
-ART_SIZE = 280
+ART_SIZE = 236
 
 # the two sizes of ScummVM's layouts: below 400 lines (320x200) and from 400
 # (pop: a popup's arrows, width, height, the lower one's top, the upper
@@ -254,9 +255,7 @@ def gfx(bitmaps):
         s += "\t\t<text_color id = '%s' color = '%s'/>\n" % (id, c)
     s += "\t</fonts>\n\n"
     s += ("\t<cursor file = 'cursor.bmp' hotspot = '0, 0'/>\n"
-          "\t<cursor resolution = 'y<H' file = 'cursor_small.bmp' hotspot = '0, 0'/>\n"
-          "\t<cursor file = 'cursor.bmp' hotspot = '0, 0' type = 'index'/>\n"
-          "\t<cursor resolution = 'y<H' file = 'cursor_small.bmp' hotspot = '0, 0' type = 'index'/>\n\n")
+          "\t<cursor file = 'cursor.bmp' hotspot = '0, 0' type = 'index'/>\n\n")
     return s + drawdata() + "</render_info>\n"
 
 # --- bitmaps: ScummVM draws a theme's BMP with magenta as transparency -------
@@ -282,14 +281,12 @@ def bmp(im, name, bg=None):
 ARROW = ["2", "22", "212", "2112", "21112", "211112", "2111112", "21111112", "211111112", "2111111112",
          "21111122222", "2112112", "212 2112", "22  2112", "2    2112", "     222"]
 
-def pointer(scale):
-    im = Image.new("RGB", (11 * scale, 16 * scale), KEY)
-    d = ImageDraw.Draw(im)
+def pointer():
+    im = Image.new("RGB", (11, 16), KEY)
     for y, row in enumerate(ARROW):
         for x, ch in enumerate(row):
             if ch != " ":
-                d.rectangle((x * scale, y * scale, x * scale + scale - 1, y * scale + scale - 1),
-                            fill=rgb("ink") if ch == "1" else rgb("dark"))
+                im.putpixel((x, y), rgb("ink") if ch == "1" else rgb("dark"))
     return im
 
 def box(size, line, round_, fill, edge, mark):
@@ -353,10 +350,12 @@ def logos():
         ImageDraw.Draw(im).rectangle((x, H // 2 - divider, x + 1, H // 2 + divider), fill=rgb("dim") + (255,))
         return im
 
-    # the launcher (640x400, 640x480) on the background; the in-game menu
-    # (640x480 games) on its own, which has the background's colour too, at
-    # most the 210 pixels of its slot
+    # the launcher (640x400, 640x480) on the background, in the list and grid
+    # views and, smaller, the artwork view; the in-game menu (640x480 games)
+    # on its own, which has the background's colour too, at most the 210
+    # pixels of its slot
     return [bmp(side_by_side(70, 54, 14, 24, 80), "logo.bmp", "bg"),
+            bmp(side_by_side(56, 43, 11, 19, 64), "logo_art.bmp", "bg"),
             bmp(side_by_side(33, 21, 7, 9, 40), "logo_small.bmp", "bg")]
 
 # ScummVM's icons, their colours turned into the theme's by brightness
@@ -421,29 +420,37 @@ def cozette():
     # no table of advances, none of boxes
     open(os.path.join(DIR, "cozette.fcc"), "wb").write(fcc + b"\0\0")
 
-# The artwork view (640x400 / 640x480): a line with the small logo, the
-# search and the grouping; the list, and beside it the artwork with the
+# The artwork view (640x400 / 640x480): the logo, 64 lines high (Danik: the
+# small one was too small), with the search over the grouping and the help
+# beside it; the list, and beside it the artwork with the
 # game's details under it; the list view's buttons in two rows, the version
 # between the views' buttons and the last ones, which the
 # bottom padding makes room for (ScummVM's launcher dialogs do it that way:
 # its layout gives the list everything but the padding)
 def art_dialog():
+    # the width inside the backend's margin for CRTs (10 pixels at 640x480,
+    # mister-graphics.cpp) and the dialog's padding; beside the logo the rest
+    logo = Image.open(os.path.join(DIR, "logo_art.bmp")).width
+    side = 640 - 2 * 10 - 2 * 16 - logo - 10
     line = "\t\t\t\t\t<widget name = '%s' width = '%d' height = '15'/>\n"
     button = "\t\t\t\t<widget name = '%s' height = 'Globals.Button.Height'/>\n"
     switch = "\t\t\t\t<widget name = '%s' height = 'Globals.Button.Height' width = 'Globals.Button.Height'/>\n"
     return ("\t<dialog name = 'LauncherArt' overlays = 'screen'>\n"
             "\t\t<layout type = 'vertical' align = 'center' padding = '16, 16, 8, 60'>\n"
-            "\t\t\t<layout type = 'horizontal' spacing = '5' padding = '0, 0, 0, 0' align = 'center'>\n"
-            "\t\t\t\t<widget name = 'Logo' width = '208' height = '40' rtl = 'no'/>\n"
-            "\t\t\t\t<space size = '10'/>\n"
-            "\t\t\t\t<widget name = 'SearchPic' width = '16' height = '17' rtl = 'no'/>\n"
-            "\t\t\t\t<widget name = 'Search' width = '120' height = 'Globals.Line.Height'/>\n"
-            "\t\t\t\t<widget name = 'SearchClearButton' height = 'Globals.Line.Height' width = 'Globals.Line.Height'/>\n"
-            "\t\t\t\t<space size = '5'/>\n"
-            "\t\t\t\t<widget name = 'GroupPic' width = '17' height = '17' rtl = 'no'/>\n"
-            "\t\t\t\t<widget name = 'laGroupPopup' width = '100' type = 'PopUp'/>\n"
-            "\t\t\t\t<space/>\n"
-            "\t\t\t\t<widget name = 'HelpButton' height = 'Globals.Button.Height' width = 'Globals.Launcher.HelpButton.Width'/>\n"
+            "\t\t\t<layout type = 'horizontal' spacing = '10' padding = '0, 0, 0, 0' align = 'center'>\n"
+            "\t\t\t\t<widget name = 'Logo' width = '%d' height = '64' rtl = 'no'/>\n" % logo
+            + "\t\t\t\t<layout type = 'vertical' spacing = '8' padding = '0, 0, 0, 0'>\n"
+            "\t\t\t\t\t<layout type = 'horizontal' spacing = '5' padding = '0, 0, 0, 0' align = 'center'>\n"
+            "\t\t\t\t\t\t<widget name = 'SearchPic' width = '16' height = '17' rtl = 'no'/>\n"
+            "\t\t\t\t\t\t<widget name = 'Search' width = '%d' height = 'Globals.Line.Height'/>\n" % (side - 16 - 16 - 10)
+            + "\t\t\t\t\t\t<widget name = 'SearchClearButton' height = 'Globals.Line.Height' width = 'Globals.Line.Height'/>\n"
+            "\t\t\t\t\t</layout>\n"
+            "\t\t\t\t\t<layout type = 'horizontal' spacing = '5' padding = '0, 0, 0, 0' align = 'center'>\n"
+            "\t\t\t\t\t\t<widget name = 'GroupPic' width = '16' height = '17' rtl = 'no'/>\n"
+            "\t\t\t\t\t\t<widget name = 'laGroupPopup' width = '%d' type = 'PopUp'/>\n" % (side - 16 - 24 - 10)
+            + "\t\t\t\t\t\t<widget name = 'HelpButton' height = 'Globals.Button.Height' width = 'Globals.Launcher.HelpButton.Width'/>\n"
+            "\t\t\t\t\t</layout>\n"
+            "\t\t\t\t</layout>\n"
             "\t\t\t</layout>\n"
             "\t\t\t<layout type = 'horizontal' spacing = '10' padding = '0, 0, 0, 0'>\n"
             "\t\t\t\t<widget name = 'GameList'/>\n"
@@ -510,7 +517,7 @@ def main():
     shutil.rmtree(DIR, ignore_errors=True)
     os.makedirs(DIR)
     open(os.path.join(DIR, "THEMERC"), "w").write("[%s:%s:Danik]\n" % (version, NAME))
-    bitmaps = [bmp(pointer(1), "cursor_small.bmp"), bmp(pointer(2), "cursor.bmp")] + boxes() + logos()
+    bitmaps = [bmp(pointer(), "cursor.bmp")] + boxes() + logos()
     icons()
     cozette()
     layouts()
