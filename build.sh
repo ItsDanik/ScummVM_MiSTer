@@ -29,11 +29,11 @@ else
 fi
 
 # Engines (CLAUDE.md, "Decisions"): every 2D engine that is on by default,
-# and Grim Fandango with its software renderer (TinyGL); no OpenGL, so not
-# the 3D ones, nor those with too much full-motion video or screens bigger
-# than 640x480 for the ARM
+# and Grim Fandango and Escape from Monkey Island with their software renderer
+# (TinyGL); no OpenGL, so not the 3D ones, nor those with too much full-motion
+# video or screens bigger than 640x480 for the ARM
 ENGINES_OFF=alcachofa,colony,freescape,hpl1,myst3,playground3d,stark,tetraedge
-ENGINES_OFF=$ENGINES_OFF,twp,watchmaker,monkey4,wintermute,riven
+ENGINES_OFF=$ENGINES_OFF,twp,watchmaker,wintermute,riven
 ENGINES_OFF=$ENGINES_OFF,agds,bladerunner,buried,crab,cryomni3d,icb,mtropolis
 ENGINES_OFF=$ENGINES_OFF,nancy,pegasus,phoenixvr,qdengine,sword25,titanic,vcruise
 ENGINES_OFF=$ENGINES_OFF,zvision,testbed
@@ -56,7 +56,7 @@ hybrid/docker.sh sh -c "
       --with-zlib-prefix=$DEPS --with-png-prefix=$DEPS --with-jpeg-prefix=$DEPS \
       --with-ogg-prefix=$DEPS --with-vorbis-prefix=$DEPS --with-flac-prefix=$DEPS \
       --with-mad-prefix=$DEPS --with-sdl-prefix=$PREFIX \
-      --enable-engine=grim --disable-engine=$ENGINES_OFF
+      --enable-engine=grim,monkey4 --disable-engine=$ENGINES_OFF
   fi &&
   make -j\$(nproc)"
 ls -la "build/$TARGET/scummvm"
