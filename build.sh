@@ -29,8 +29,9 @@ else
 fi
 
 # Engines (CLAUDE.md, "Decisions"): every 2D engine that is on by default,
-# and Grim Fandango and Escape from Monkey Island with their software renderer
-# (TinyGL); no OpenGL, so not the 3D ones, nor those with too much full-motion
+# and Grim Fandango with its software renderer (TinyGL), but not Escape from
+# Monkey Island (monkey4, Danik 2026-10-28: "experimental and incomplete
+# upstream as well"); no OpenGL, so not the 3D ones, nor those with too much full-motion
 # video or screens bigger than 640x480 for the ARM
 ENGINES_OFF=alcachofa,colony,freescape,hpl1,myst3,playground3d,stark,tetraedge
 ENGINES_OFF=$ENGINES_OFF,twp,watchmaker,wintermute,riven
@@ -56,7 +57,7 @@ hybrid/docker.sh sh -c "
       --with-zlib-prefix=$DEPS --with-png-prefix=$DEPS --with-jpeg-prefix=$DEPS \
       --with-ogg-prefix=$DEPS --with-vorbis-prefix=$DEPS --with-flac-prefix=$DEPS \
       --with-mad-prefix=$DEPS --with-sdl-prefix=$PREFIX \
-      --enable-engine=grim,monkey4 --disable-engine=$ENGINES_OFF
+      --enable-engine=grim --disable-engine=monkey4,$ENGINES_OFF
   fi &&
   make -j\$(nproc)"
 ls -la "build/$TARGET/scummvm"

@@ -1,0 +1,4 @@
+# The games of package/games.txt for dnkLauncher, the frontend (hybrid/docs/dnklauncher.md),
+# a line each: <id>|<year>|<developer>|<description>. The description is shown on the
+# game's Details page, at most 4 lines there (about 340 characters).
+ScummVM|2001|The ScummVM Team|ScummVM plays the classic point-and-click adventures of LucasArts, Sierra, Revolution and more, from Monkey Island and Day of the Tentacle to King's Quest and Broken Sword. Add your games in its launcher and play them on the MiSTer's 15kHz screen in their own resolution, with a pad or a mouse.

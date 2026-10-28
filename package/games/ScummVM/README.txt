@@ -1,5 +1,5 @@
 ScummVM for MiSTer
-=================
+==================
 
 ScummVM on MiSTer FPGA as a hybrid port.
 
@@ -32,10 +32,14 @@ If something is wrong
 Credits and licenses
   ScummVM by the ScummVM Team: GPL-3.0-or-later (LICENSE-scummvm.txt,
   COPYRIGHT-scummvm.txt, and LICENSES-scummvm/ for parts under others).
+  The game icons of scummvm-icons by its authors: GPL-2.0
+  (icons/LICENSE-icons.txt, icons/AUTHORS-icons.txt). The Cozette font
+  by Samhain and contributors: MIT (in data/misterhybrid.zip).
+  GeneralUser GS by S. Christian Collins, the SoundFont of the core's
+  MIDI synthesizer (games/dnk/SoundFonts/, GeneralUser-GS-LICENSE.txt).
   SDL by Sam Lantinga and contributors: zlib (LICENSE-sdl.txt). MiSTer by
-  Sorgelig and the MiSTer-devel contributors.
-  Inspired by MiSTer Frontier by MiSTer Organize. The launcher: GPL-3.0
-  (LICENSE-gpl3.txt); the FPGA core: GPL-2.0. Source:
-  https://github.com/ItsDanik/ScummVM_MiSTer
+  Sorgelig and the MiSTer-devel contributors. Inspired by MiSTer Frontier
+  by MiSTer Organize. The launcher: GPL-3.0 (LICENSE-gpl3.txt); the FPGA
+  core: GPL-2.0. Source: https://github.com/ItsDanik/ScummVM_MiSTer
 
 Support the project: https://www.patreon.com/itsdanik
