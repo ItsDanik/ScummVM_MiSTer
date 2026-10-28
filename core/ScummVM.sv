@@ -67,7 +67,7 @@ localparam CONF_STR = {
 	// hybrid/README.md "Video modes"): hidden in a core without it (FLICKER 0,
 	// menu mask bit 9), greyed out while the picture is not interlaced (bit 10)
 	"H9P1-;",
-	"H9DAP1O[106:105],Flicker Filter,Off,Light,Strong;",
+	"H9DAP1O[106:105],Flicker Filter,Light,Strong,Off;",
 	// GAME: no HUD margins: ScummVM's games are drawn in the lines they were
 	// made for, 200 or 480, and have no HUD over a view (CLAUDE.md)
 	"O[6:5],Stereo Mix,None,25%,50%,100%;",
