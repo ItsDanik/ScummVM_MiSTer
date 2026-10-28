@@ -74,6 +74,8 @@ cp build/mister/mh_message "$G/mh_message"
 mkdir "$G/data"
 hybrid/docker.sh make -s -C build/mister --eval 'print-dist-files: ; @echo $(DIST_FILES_THEMES) $(DIST_FILES_VKEYBD) $(DIST_FILES_ENGINEDATA) $(DIST_FILES_ENGINEDATA_BIG)' print-dist-files \
     | tr ' ' '\n' | grep . | while read -r f; do cp "$f" "$G/data/"; done
+# of ScummVM's own themes only Modern, beside ours (Danik, 2026-10-28)
+rm -f "$G/data/scummclassic.zip" "$G/data/scummremastered.zip" "$G/data/residualvm.zip"
 # the port's theme, the default (tools/make_theme.py)
 python3 tools/make_theme.py > /dev/null
 cp build/theme/zip/misterhybrid.zip "$G/data/"

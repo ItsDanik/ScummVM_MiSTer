@@ -80,6 +80,8 @@ localparam CONF_STR = {
 	"O[14:11],Music Volume,100%,90%,80%,70%,60%,50%,40%,30%,20%,10%,0%;",
 	"O[29:26],Speech Volume,100%,90%,80%,70%,60%,50%,40%,30%,20%,10%,0%;",
 	"O[31:30],Subtitles,Game Default,Speech Only,Subtitles Only,Both;",
+	// ScummVM's talkspeed (MiSTer_TextSpeed()); Normal is the game's own
+	"O[39:37],Text Speed,Normal,Slowest,Slow,Fast,Fastest;",
 	// Music: MIDI to the synthesizer or an MT32-pi, FM to the core's chip;
 	// a change takes effect when the next game starts
 	"O[87],Music,MIDI,FM chip;",
@@ -90,6 +92,8 @@ localparam CONF_STR = {
 	"h6O[103:100],MT32-pi SoundFont,Pi's own,0,1,2,3,4,5,6,7;",
 	"h6T[104],Reset Hanging Notes;",
 	"O[25:24],Pointer Speed,Normal,Slow,Fast;",
+	// ScummVM's joystick_deadzone: 3, 1, 6 (MiSTer_StickDeadzone())
+	"O[36:35],Stick Deadzone,Normal,Small,Large;",
 	// ScummVM's launcher: 320x200 (no change of mode to and from most games,
 	// not interlaced) or 640x480 (ScummVM's high resolution layout, 480i at
 	// 15kHz); shown at once while the launcher is on the screen
