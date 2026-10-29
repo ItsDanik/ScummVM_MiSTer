@@ -383,7 +383,13 @@ def icons():
 # 6x13 cell as make_wall.py has it, and a default character that is there.
 # With it the cache ScummVM makes of it (BdfFont::cacheFontData(), version 1;
 # every glyph in the same box and advance): without one in the theme ScummVM
-# reads the BDF at every start and writes the cache into the folder it runs in
+# reads the BDF at every start and writes the cache into the folder it runs in.
+# Cozette's star (U+2605) goes to 0x80, which Latin-1 leaves empty: the mark of
+# a game marked for dnkLauncher, and the artwork view's box for it
+# (gui/mister-favourites.cpp)
+STARS = {0x2605: 0x80}
+
+
 def cozette():
     src = open(os.path.join(ASSETS, "cozette.bdf")).read()
     head, rest = src.split("STARTCHAR", 1)
@@ -391,6 +397,9 @@ def cozette():
     out, glyphs = [], {}
     for g in re.findall(r"STARTCHAR.*?ENDCHAR\n", "STARTCHAR" + rest, re.S):
         enc = int(re.search(r"ENCODING (-?\d+)", g).group(1))
+        if enc in STARS.values():
+            continue
+        enc = STARS.get(enc, enc)
         if not 32 <= enc <= 255:
             continue
         w, h, xo, yo = map(int, re.search(r"BBX (-?\d+) (-?\d+) (-?\d+) (-?\d+)", g).groups())
@@ -457,7 +466,11 @@ def art_dialog():
             "\t\t\t\t<layout type = 'vertical' spacing = '0' padding = '0, 0, 0, 0'>\n"
             "\t\t\t\t\t<widget name = 'Art' width = '%d' height = '%d'/>\n" % (ART_SIZE, ART_SIZE)
             + "\t\t\t\t\t<space size = '4'/>\n"
-            + line % ("ArtTitle", ART_SIZE)
+            # the title, and the button marking the game for dnkLauncher
+            + "\t\t\t\t\t<layout type = 'horizontal' spacing = '2' padding = '0, 0, 0, 0' align = 'center'>\n"
+            + "\t" + line % ("ArtTitle", ART_SIZE - 40)
+            + "\t\t\t\t\t\t<widget name = 'ArtFavourite' width = '38' height = '15'/>\n"
+            + "\t\t\t\t\t</layout>\n"
             + "".join(line % ("ArtDetail%d" % i, ART_SIZE) for i in range(1, 5))
             + "\t\t\t\t\t<space/>\n"
             "\t\t\t\t</layout>\n"
