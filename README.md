@@ -102,7 +102,8 @@ The volumes, subtitles, text speed and music are the OSD's, over each game's own
 
 | Button | Action |
 |---|---|
-| Left stick, D-pad | move the pointer; it starts slow and gets faster |
+| Left stick | moves the pointer: slowly when pushed a little, fast when pushed fully |
+| D-pad | moves the pointer: a tap moves it one pixel; held, it starts slow and gets faster (a game with actions of its own on the d-pad keeps them) |
 | A (Xbox B / PlayStation Circle) | Left Click |
 | B (Xbox A / PlayStation Cross) | Right Click |
 | X (Xbox Y / PlayStation Triangle) | Skip: skips a cutscene (Esc) |
