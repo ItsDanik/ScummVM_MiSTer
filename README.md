@@ -103,16 +103,16 @@ The volumes, subtitles, text speed and music are the OSD's, over each game's own
 | Button | Action |
 |---|---|
 | Left stick | moves the pointer: slowly when pushed a little, fast when pushed fully |
-| D-pad | moves the pointer: a tap moves it one pixel; held, it starts slow and gets faster (a game with actions of its own on the d-pad keeps them) |
+| D-pad | moves the pointer: a tap moves it two pixels; held, it starts slow and gets faster (a game with actions of its own on the d-pad keeps them) |
 | A (Xbox B / PlayStation Circle) | Left Click |
 | B (Xbox A / PlayStation Cross) | Right Click |
 | X (Xbox Y / PlayStation Triangle) | Skip: skips a cutscene (Esc) |
 | Y (Xbox X / PlayStation Square) | Skip Line: skips a line of dialogue |
-| L (LB / L1) | Slow Pointer: while held, the pointer moves slowly |
+| L (LB / L1) | Slow Pointer: while held, the pointer moves slowly, and a tap of the d-pad moves it one pixel |
 | R (RB / R1) | Game Menu: the game's own menu (F5), in the games that have one |
 | Select | Keyboard: ScummVM's keyboard on the screen, to type with the pointer |
 | Start | Main Menu: ScummVM's menu (save, load, options, return to the launcher) |
-| In the menus | in ScummVM's launcher and menus *Menu OK* confirms and *Menu Back* closes a menu; in a game's own menus *Menu OK* clicks and *Menu Back* is Esc |
+| In the menus | in ScummVM's launcher and menus *Menu OK* confirms and *Menu Back* closes a menu; if those are on buttons that also have an action above, there they are only *Menu OK* (a click at the pointer) and *Menu Back* (on a PlayStation or Xbox pad without a mapping: Cross or A clicks, Circle or B closes). In a game the buttons do their actions above, and *Menu OK* clicks and *Menu Back* is Esc only on buttons without one |
 
 Change the buttons in the OSD under *Define ScummVM buttons*. *Menu OK* and *Menu Back* there are only needed for a spare button without a game function. While the OSD is open, the game gets no input.
 
